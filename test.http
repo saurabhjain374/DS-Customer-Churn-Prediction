@@ -1,0 +1,22 @@
+POST http://localhost:5000/predict
+Content-Type: application/json
+
+< ./sample_request.json
+
+### Test: missing required fields
+POST http://localhost:5000/predict
+Content-Type: application/json
+
+{
+  "gender": "Female",
+  "tenure": 5
+}
+
+### Test: not a JSON object
+POST http://localhost:5000/predict
+Content-Type: application/json
+
+"just a string"
+
+### Test: health check (GET)
+GET http://localhost:5000/
