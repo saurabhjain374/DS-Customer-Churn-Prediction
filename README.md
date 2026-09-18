@@ -3,6 +3,8 @@
 
 An end-to-end machine learning solution to predict customer churn for a telecommunications company. Built on the IBM Telco Customer Churn dataset.
 
+**GitHub Repository:** https://github.com/saurabhjain374/DS-Customer-Churn-Prediction
+
 ## Project Structure
 
 ```
