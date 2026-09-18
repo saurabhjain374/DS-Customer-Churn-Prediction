@@ -7,6 +7,7 @@ a churn prediction with probability.
 """
 
 from pathlib import Path
+import math
 
 import joblib
 import pandas as pd
@@ -29,6 +30,27 @@ REQUIRED_FIELDS = [
     "StreamingMovies", "Contract", "PaperlessBilling", "PaymentMethod",
     "MonthlyCharges", "TotalCharges",
 ]
+
+CATEGORICAL_VALUES = {
+    "gender": {"Female", "Male"},
+    "Partner": {"Yes", "No"},
+    "Dependents": {"Yes", "No"},
+    "PhoneService": {"Yes", "No"},
+    "MultipleLines": {"Yes", "No", "No phone service"},
+    "InternetService": {"DSL", "Fiber optic", "No"},
+    "OnlineSecurity": {"Yes", "No", "No internet service"},
+    "OnlineBackup": {"Yes", "No", "No internet service"},
+    "DeviceProtection": {"Yes", "No", "No internet service"},
+    "TechSupport": {"Yes", "No", "No internet service"},
+    "StreamingTV": {"Yes", "No", "No internet service"},
+    "StreamingMovies": {"Yes", "No", "No internet service"},
+    "Contract": {"Month-to-month", "One year", "Two year"},
+    "PaperlessBilling": {"Yes", "No"},
+    "PaymentMethod": {
+        "Electronic check", "Mailed check", "Bank transfer (automatic)",
+        "Credit card (automatic)",
+    },
+}
 
 
 def make_tenure_group(t: int) -> str:
@@ -58,6 +80,28 @@ def prepare_features(payload: dict) -> pd.DataFrame:
     return df
 
 
+def validate_payload(payload: dict) -> list[str]:
+    """Return user-friendly validation errors before scoring the request."""
+    errors = []
+    for field, allowed in CATEGORICAL_VALUES.items():
+        if not isinstance(payload.get(field), str) or payload[field] not in allowed:
+            errors.append(f"{field} must be one of: {', '.join(sorted(allowed))}")
+
+    for field in ("tenure", "MonthlyCharges", "TotalCharges"):
+        try:
+            value = float(payload[field])
+            if not math.isfinite(value) or value < 0 or (
+                field == "tenure" and (value > 72 or not value.is_integer())
+            ):
+                errors.append(f"{field} has an invalid range")
+        except (TypeError, ValueError):
+            errors.append(f"{field} must be numeric")
+
+    if payload.get("SeniorCitizen") not in (0, 1):
+        errors.append("SeniorCitizen must be 0 or 1")
+    return errors
+
+
 # --- Flask app ---
 app = Flask(__name__)
 
@@ -77,6 +121,10 @@ def predict():
     missing = [f for f in REQUIRED_FIELDS if f not in payload]
     if missing:
         return jsonify({"error": "Missing required fields.", "missing_fields": missing}), 400
+
+    validation_errors = validate_payload(payload)
+    if validation_errors:
+        return jsonify({"error": "Invalid field values.", "details": validation_errors}), 400
 
     try:
         features = prepare_features(payload)

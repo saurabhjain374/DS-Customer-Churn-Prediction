@@ -53,7 +53,7 @@ pip install -r requirements.txt
 Open `notebook/churn_analysis.ipynb` in VS Code (or Jupyter), select the `.venv` kernel, and run all cells. The notebook covers:
 
 1. **Data Understanding & Preparation** — dtype fixes, missing value handling, 70/30 stratified split
-2. **Exploratory Data Analysis** — 6 charts with business insights
+2. **Exploratory Data Analysis** — 5 charts with business insights
 3. **Feature Engineering** — 3 new features (`tenure_group`, `num_services`, `charges_per_service`)
 4. **Model Development** — Decision Tree, unrestricted vs controlled configurations
 5. **Model Evaluation** — accuracy, precision, recall, F1, confusion matrix, precision-vs-recall discussion
@@ -94,6 +94,7 @@ Error responses (HTTP 400):
 
 - Non-JSON body → `{ "error": "Request body must be a JSON object." }`
 - Missing fields → `{ "error": "Missing required fields.", "missing_fields": [...] }`
+- Invalid categories or numeric ranges → `{ "error": "Invalid field values.", "details": [...] }`
 
 ## Testing the API
 

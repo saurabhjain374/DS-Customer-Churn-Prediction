@@ -1,10 +1,10 @@
-POST http://localhost:5000/predict
+POST http://127.0.0.1:5000/predict
 Content-Type: application/json
 
 < ./sample_request.json
 
 ### Test: missing required fields
-POST http://localhost:5000/predict
+POST http://127.0.0.1:5000/predict
 Content-Type: application/json
 
 {
@@ -13,10 +13,10 @@ Content-Type: application/json
 }
 
 ### Test: not a JSON object
-POST http://localhost:5000/predict
+POST http://127.0.0.1:5000/predict
 Content-Type: application/json
 
 "just a string"
 
 ### Test: health check (GET)
-GET http://localhost:5000/
+GET http://127.0.0.1:5000/
