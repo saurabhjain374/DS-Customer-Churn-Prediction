@@ -62,6 +62,8 @@ Open `notebook/churn_analysis.ipynb` in VS Code (or Jupyter), select the `.venv`
 6. **Model Interpretation** — feature importance and tree visualization
 7. **Model Saving** — pickles the trained pipeline to `model/churn_model.pkl`
 
+*Bonus:* hyperparameter tuning via `GridSearchCV` (recall-scored) and a Random Forest baseline — the controlled Decision Tree remains the submitted model.
+
 ## Running the REST API
 
 Start the Flask server from the project root:
